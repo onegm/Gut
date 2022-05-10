@@ -19,6 +19,7 @@ var default_options = {
 	font_color = Color(.8, .8, .8, 1).to_html(),
 	font_name = 'CourierPrime',
 	font_size = 16,
+	headless = false,
 	hide_orphans = false,
 	ignore_pause = false,
 	include_subdirs = false,
@@ -107,55 +108,60 @@ func write_options(path):
 
 # Apply all the options specified to _tester.  This is where the rubber meets
 # the road.
-func _apply_options(opts, _tester):
-	_tester.set_yield_between_tests(true)
-	_tester.set_modulate(Color(1.0, 1.0, 1.0, min(1.0, float(opts.opacity) / 100)))
-	_tester.show()
+func _apply_options(opts, tester):
+	if(opts.headless):
+		opts.should_exit = true
+		opts.ignore_pause = true
+		tester.get_logger().disable_printer('gui', true)
 
-	_tester.set_include_subdirectories(opts.include_subdirs)
+	tester.set_yield_between_tests(true)
+	tester.set_modulate(Color(1.0, 1.0, 1.0, min(1.0, float(opts.opacity) / 100)))
+	tester.show()
+
+	tester.set_include_subdirectories(opts.include_subdirs)
 
 	if(opts.should_maximize):
-		_tester.maximize()
+		tester.maximize()
 
 	if(opts.compact_mode):
-		_tester.get_gui().compact_mode(true)
+		tester.get_gui().compact_mode(true)
 
 	if(opts.inner_class != ''):
-		_tester.set_inner_class_name(opts.inner_class)
-	_tester.set_log_level(opts.log_level)
-	_tester.set_ignore_pause_before_teardown(opts.ignore_pause)
+		tester.set_inner_class_name(opts.inner_class)
+	tester.set_log_level(opts.log_level)
+	tester.set_ignore_pause_before_teardown(opts.ignore_pause)
 
 	for i in range(opts.dirs.size()):
-		_tester.add_directory(opts.dirs[i], opts.prefix, opts.suffix)
+		tester.add_directory(opts.dirs[i], opts.prefix, opts.suffix)
 
 	for i in range(opts.tests.size()):
-		_tester.add_script(opts.tests[i])
+		tester.add_script(opts.tests[i])
 
 	if(opts.selected != ''):
-		_tester.select_script(opts.selected)
+		tester.select_script(opts.selected)
 		# _run_single = true
 
 	if(opts.double_strategy == 'full'):
-		_tester.set_double_strategy(DOUBLE_STRATEGY.FULL)
+		tester.set_double_strategy(DOUBLE_STRATEGY.FULL)
 	elif(opts.double_strategy == 'partial'):
-		_tester.set_double_strategy(DOUBLE_STRATEGY.PARTIAL)
+		tester.set_double_strategy(DOUBLE_STRATEGY.PARTIAL)
 
-	_tester.set_unit_test_name(opts.unit_test_name)
-	_tester.set_pre_run_script(opts.pre_run_script)
-	_tester.set_post_run_script(opts.post_run_script)
-	_tester.set_color_output(!opts.disable_colors)
-	_tester.show_orphans(!opts.hide_orphans)
-	_tester.set_junit_xml_file(opts.junit_xml_file)
-	_tester.set_junit_xml_timestamp(opts.junit_xml_timestamp)
+	tester.set_unit_test_name(opts.unit_test_name)
+	tester.set_pre_run_script(opts.pre_run_script)
+	tester.set_post_run_script(opts.post_run_script)
+	tester.set_color_output(!opts.disable_colors)
+	tester.show_orphans(!opts.hide_orphans)
+	tester.set_junit_xml_file(opts.junit_xml_file)
+	tester.set_junit_xml_timestamp(opts.junit_xml_timestamp)
 
-	_tester.get_gui().set_font_size(opts.font_size)
-	_tester.get_gui().set_font(opts.font_name)
+	tester.get_gui().set_font_size(opts.font_size)
+	tester.get_gui().set_font(opts.font_name)
 	if(opts.font_color != null and opts.font_color.is_valid_html_color()):
-		_tester.get_gui().set_default_font_color(Color(opts.font_color))
+		tester.get_gui().set_default_font_color(Color(opts.font_color))
 	if(opts.background_color != null and opts.background_color.is_valid_html_color()):
-		_tester.get_gui().set_background_color(Color(opts.background_color))
+		tester.get_gui().set_background_color(Color(opts.background_color))
 
-	return _tester
+	return tester
 
 
 func config_gut(gut):

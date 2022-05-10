@@ -166,6 +166,8 @@ func setup_options(options, font_names):
 
 	opts.add('-gjunit_xml_file', options.junit_xml_file, 'Export results of run to this file in the Junit XML format.')
 	opts.add('-gjunit_xml_timestamp', options.junit_xml_timestamp, 'Include a timestamp in the -gjunit_xml_file, default [default]')
+	opts.add('-gheadless', options.headless, 'For use in conjunction with --no-window or headless server.  This sets options to exit, ignore pause, and some other headless optimizations.')
+
 	return opts
 
 
@@ -201,6 +203,8 @@ func extract_command_line_options(from, to):
 
 	to.junit_xml_file = from.get_value('-gjunit_xml_file')
 	to.junit_xml_timestamp = from.get_value('-gjunit_xml_timestamp')
+
+	to.headless = from.get_value('-gheadless')
 
 
 
