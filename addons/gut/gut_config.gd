@@ -111,6 +111,7 @@ func write_options(path):
 func _apply_options(opts, tester):
 	if(opts.headless):
 		opts.should_exit = true
+		opts.should_exit_on_success = false
 		opts.ignore_pause = true
 		tester.get_logger().disable_printer('gui', true)
 
